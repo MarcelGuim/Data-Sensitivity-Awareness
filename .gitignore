@@ -1,0 +1,30 @@
+# Secrets
+.env
+.env.*
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Models, adapters, checkpoints, run outputs
+adapters/
+checkpoints/
+outputs/
+runs/
+wandb/
+*.safetensors
+*.bin
+*.gguf
+*.pt
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Claude Code personal settings
+.claude/settings.local.json
