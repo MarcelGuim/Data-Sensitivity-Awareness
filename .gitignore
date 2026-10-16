@@ -1,16 +1,30 @@
-# Secrets
+# Secrets (tokens go in Kaggle Secrets, never in the repo)
 .env
 .env.*
 *.key
+*.pem
+kaggle.json
+.huggingface/
+.cache/huggingface/
+secrets/
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
 venv/
+env/
 *.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Models, adapters, checkpoints, run outputs
+# Jupyter / Kaggle
+.ipynb_checkpoints/
+*.zip
+*.tar.gz
+
+# Models, adapters, checkpoints, run outputs (large; keep on Kaggle)
 adapters/
 checkpoints/
 outputs/
@@ -20,11 +34,17 @@ wandb/
 *.bin
 *.gguf
 *.pt
+*.pth
+*.ckpt
+*.onnx
 
 # OS / editors
 .DS_Store
+Thumbs.db
 .idea/
 .vscode/
+*.swp
 
-# Claude Code personal settings
+# Agent personal settings (shared instructions live in AGENTS.md)
 .claude/settings.local.json
+.claude/projects/
