@@ -12,7 +12,7 @@ Labels: see `AGENTS.md`.
 - **Decided:** Instead of only trying to prevent injections, limit what a successful one can disclose: the attacker may redirect the agent, but what it can reach and disclose stays contained.
 
 ## Idea
-- **Decided:** Train an LLM agent to recognize how sensitive each piece of data is. Every item in a synthetic company's data carries one of four tiers: public, internal, confidential, highly confidential.
+- **Decided:** Train an LLM agent to recognize how sensitive each piece of data is. Every item in a synthetic company's data carries a tier. The proposal had four (public, internal, confidential, highly confidential); **Decided (2026-10-28, Marcel):** three tiers, public, private, confidential (see `04-dataset-design.md`).
 - **Decided:** Examples from the proposal: office map is public; client list is confidential; unreleased product schematics are highly confidential.
 - **Decided:** The agent discloses data according to its tier and the requester's authorization, even when an injection instructs otherwise.
 - **Decided:** Positioning: a different angle on instruction-hierarchy work ("The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions"). Prioritize data by sensitivity rather than instructions by source. A last-resort layer that holds when other defences fail.
@@ -21,7 +21,7 @@ Labels: see `AGENTS.md`.
 - **Decided:** Does training a model to reason about data sensitivity reduce leakage under prompt injection beyond what a system-prompt policy achieves, and at what cost to utility?
 
 ## Method (from the proposal)
-1. **Decided:** Write criteria for the four tiers, including hard cases where individually harmless facts reveal something sensitive when combined.
+1. **Decided:** Write criteria for the tiers (three since 2026-10-28), including hard cases where individually harmless facts reveal something sensitive when combined.
 2. **Decided:** Generate a synthetic company dataset with an LLM, then validate it manually against the criteria: every item in the evaluation set and a sample of the training set. Plant canary strings in sensitive items so leakage is detected automatically.
 3. **Decided:** Build an agent with access to the data and attack it with prompt injections that try to extract it, including, if possible, an adaptive attacker that targets the defence (paraphrasing, encoding, summarizing).
 4. **Decided:** Compare (a) untrained model, no protection; (b) untrained model with a system prompt stating the sensitivity policy; (c) a model trained on sensitivity-labelled data, in the style of instruction-hierarchy training.

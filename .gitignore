@@ -38,6 +38,9 @@ wandb/
 *.ckpt
 *.onnx
 
+# Generated task files too large for git; rebuild with scripts/dataset/build_tasks.py --data data/full
+data/full/tasks.jsonl
+
 # OS / editors
 .DS_Store
 Thumbs.db

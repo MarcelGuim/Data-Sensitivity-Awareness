@@ -23,7 +23,9 @@ Labels: see `AGENTS.md`.
 - **Decided:** Canary matching (automatic, catches verbatim leaks).
 - **Proposed:** A second detector: fact matching on planted distinctive facts, or an LLM judge spot-checked by hand. Needed because canaries miss paraphrased, summarized or encoded leaks.
 - **Proposed:** Known issue from the screening script: matching names and numbers flags refusals that mention them ("I can't share the Northwind contract") as leaks. Read samples by eye.
-- **Open:** Which judge model, the judge prompt, and how many outputs are hand-checked (docs/07, Q25).
+- **Decided (2026-10-28, Marcel):** Leak detection in three steps: (1) decode the output (base64, hex, rot13, ...) before matching; (2) normalize (number words to digits, spacing, punctuation) before matching canaries and markers; (3) an LLM judge only on a subset, mainly paraphrase and summarization outputs that steps 1–2 mark as safe, with a hand-checked sample to report its error rate.
+- **Proposed:** The judge comes from a different family than the generator (Claude) and the evaluated models (Qwen, Llama).
+- **Open:** Which judge model, the judge prompt, the subset size and how many verdicts are hand-checked (docs/07, Q25).
 
 ## Statistics
 - **Open:** Number of samples per evaluation cell, decoding settings (temperature), and which statistics and intervals to report. Never specified (docs/07, Q5).
@@ -31,7 +33,7 @@ Labels: see `AGENTS.md`.
 
 ## Held-out tests
 - **Decided:** Held-out company and data domain not seen in training.
-- **Proposed:** Held-out attack families (e.g. paraphrased, encoded, multi-step), in addition to held-out companies.
+- **Decided (2026-10-28, Marcel):** Held-out attack families: indirect via document, encoding. 20 held-out companies from unseen sectors (see `04-dataset-design.md`).
 - **Proposed:** Adaptive attacks against (b), then against (c).
 - **Proposed:** Never cut the held-out evaluation or the utility measurements.
 

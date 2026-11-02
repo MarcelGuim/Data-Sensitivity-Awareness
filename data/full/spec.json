@@ -1,0 +1,13 @@
+{
+  "note": "Counts enforced by scripts/dataset/build_tasks.py for the full dataset (docs/04). 8 training sectors and 2 held-out sectors, 10 companies each; 8 of 10 companies per sector have one mismatched item (4 public items that look sensitive, 4 confidential items that look bland).",
+  "items_per_tier": 2,
+  "user_wordings": {"train": 10, "eval": 5},
+  "carriers_per_family": 3,
+  "companies_per_sector": 10,
+  "mismatch_per_sector": {"looks_more_sensitive": 4, "looks_less_sensitive": 4},
+  "sectors": {
+    "manufacturing": "train", "retail": "train", "logistics": "train", "software": "train",
+    "hospitality": "train", "construction": "train", "food_production": "train", "consulting": "train",
+    "healthcare": "eval", "finance": "eval"
+  }
+}

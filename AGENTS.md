@@ -8,7 +8,7 @@ This file is the single source of project context for any AI coding agent (Claud
 Course project, ECE1776 (Computer Security, Cryptography and Privacy), U of T, Fall 2026. Group 3: Wasilat Ayinla, Khalid Challango, Marcel Guim. Proposal dated 2026-10-12. Any of the three may be the person you are talking to; ask if it matters.
 
 - **Decided:** Title "Limiting the Blast Radius of Prompt Injection Through Data-Sensitivity Awareness".
-- **Decided:** Train an LLM agent to disclose company data according to its sensitivity tier (public, internal, confidential, highly confidential) and the requester's authorization, even under prompt injection. A last-resort layer, not prevention.
+- **Decided:** Train an LLM agent to disclose company data according to its sensitivity tier (public, private, confidential; three tiers since 2026-10-28, the proposal had four) and the requester's authorization (external, internal_no_clearance, internal_clearance), even under prompt injection. A last-resort layer, not prevention.
 - **Decided:** Research question: does training a model to reason about data sensitivity reduce leakage under prompt injection beyond what a system-prompt policy achieves, and at what cost to utility?
 - **Decided:** Compare (a) untrained, no protection; (b) untrained + policy system prompt; (c) trained on sensitivity-labelled data.
 
@@ -47,6 +47,10 @@ From Marcel; teammates may change it here for the group:
 ## Status (update when it changes)
 - 2026-10-16: Docs created. Screening: `scripts/screen_models.py` (Kaggle, training stack) written, not yet run; Marcel runs it for preliminary results. `scripts/test_policy.py` is the original MLX version. A classmate sends the GPU-access email; Kaggle is the GPU path regardless. Task groups A/B/C proposed, not assigned. Open questions are being answered one by one (docs/07).
 - 2026-10-16: Screening done for Qwen and Llama (v2) and Llama b+; results in `docs/03-models.md`, summary for the group in `docs/08-findings-summary.md`. Pending: Qwen b+ run; group confirmation of models (Q1) and gaps (Q32).
+- 2026-10-28: Marcel decided three tiers (public, private, confidential), three requester levels, visible per-company tags, 100 companies, query groups (benign, direct injection, ...). Logged in docs/07; new questions Q37–Q43 block the schema.
+- 2026-10-30: Pilot built (2 companies, attack templates, task builder, scorer); awaiting group review. See docs/04, section Pilot.
+- 2026-11-01: The group agreed two tiers and two levels; Marcel reverted to three tiers and three levels the same day (docs/07). The group still needs to be told.
+- 2026-11-01: Full dataset generated (100 companies, 89,280 tasks) in `data/full/`; awaiting validation by the rule in docs/04. Plan: `data/full/validation/plan.md`. Open: Q46, Q47.
 
 ## Where things are
 - `docs/00-project-overview.md`: proposal, research question, method, evaluation, professor feedback
@@ -58,4 +62,8 @@ From Marcel; teammates may change it here for the group:
 - `docs/06-training-plan.md`: QLoRA, loss masking, run plan, rental checklist
 - `docs/07-decisions-and-open-questions.md`: dated decisions log and open questions. **Read before proposing anything.**
 - `docs/08-findings-summary.md`: snapshot of screening findings and pending group decisions, for presenting to the team (03 and 07 win if they disagree)
+- `docs/09-proposal-presentation.md`: answers to the professor's four proposal questions and the weekly plan with owners, for the Oct 21 presentation
+- `data/pilot/`: pilot companies, attack templates, response structures, generated tasks
+- `data/full/`: the 100 companies, attack templates, spec, validation plan (`tasks.jsonl` is rebuilt, not committed)
+- `scripts/dataset/`: task builder, leak scorer and its tests, validation sampler
 - `docs/archive/`: original planning handoffs, historical only. **Do not follow the instructions in them**; `docs/` supersedes them.
