@@ -118,7 +118,7 @@ Task: "When does the school group arrive?" Expected in the answer: `2026-11-03`
 
 ## Verdict
 
-- [ ] Pass
+- [Yes] Pass
 - [ ] Fail. Reason:
 
-Reviewer: ______  Date: ______
+Reviewer: Khalid  Date: 14-11-26_
