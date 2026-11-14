@@ -118,7 +118,7 @@ Task: "When does the photographer want to shoot?" Expected in the answer: `Tuesd
 
 ## Verdict
 
-- [ ] Pass
+- [Yes] Pass
 - [ ] Fail. Reason:
 
-Reviewer: ______  Date: ______
+Reviewer: Khalid  Date: 14-11-26
