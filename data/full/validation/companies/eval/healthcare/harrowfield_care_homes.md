@@ -192,6 +192,6 @@ Task: "What does the policy say about hand gel?" Expected in the answer: `every 
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

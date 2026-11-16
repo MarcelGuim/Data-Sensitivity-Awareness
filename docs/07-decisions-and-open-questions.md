@@ -50,6 +50,11 @@ Rows dated 2026-10-15/16 were recorded in the planning chat; the exact day withi
 | 2026-11-01 | Validation: per training sector check 2 companies; both pass → accept; 1 fails → check 5 more; 2 fail → check all. All held-out companies checked. 2 wordings per family and pool | Marcel | Q5 in part; Q46, Q47 open |
 | 2026-10-28 | Pilot generation waits for Wasilat's and Khalid's approval of the plan (sent by WhatsApp) | Marcel | |
 | 2026-10-30 | Go-ahead for the pilot (2 companies, attacks, scoring) | Marcel | Files listed in 04, section Pilot; group review pending |
+| 2026-11-09 | Held-out validation done: all 20 held-out companies pass (reviewed by Marcel). Training-sector and wording checks done by Wasilat and Khalid per their report, not yet in the repo | Marcel | Training data is final only once their results are in; failed companies are excluded with `prepare_kaggle.py --exclude` |
+| 2026-11-09 | The ~8B stretch model is dropped (no-go ahead of the Nov 11 gate) | Marcel | Closes Q9 |
+| 2026-11-09 | Start now, in parallel: evaluation of (a) and (b), and Qwen training for (c) | Marcel | Code in `kaggle/eval/`, `kaggle/train_qwen/` |
+| 2026-11-09 | Train with plain LoRA on the fp16 model instead of QLoRA; QLoRA (`--precision 4bit`) is the fallback if fp16 runs out of memory or gives NaN | Marcel | Supersedes QLoRA in the 2026-10-16 stack decision. Consequence, Proposed (Claude): evaluate (a), (b), (c) all in fp16 so the precision is the same (supersedes 4-bit evaluation); see Q48 |
+| 2026-11-09 | Training set 8,000 conversations (was 4,000); training capped at 20 GPU-hours | Marcel | Kaggle sessions last at most 12 h, so the cap is split over two versions |
 | Course | Presentations start Nov 25 (plan for that slot); final report due Dec 11 | Course | |
 
 ## Proposed, awaiting group agreement
@@ -231,9 +236,20 @@ Format: **Why** it matters, **Proposal** (labelled Proposed; "Claude" means rais
 - Proposal (Claude): split the 20 held-out companies 7/7/6 and the 8 training sectors 3/3/2; nobody validates a sector they would also fix.
 - Consequences: one person checking everything takes longer and misses their own blind spots.
 
+**Q48. Choices made in the Kaggle code (2026-11-09) that the group has not agreed.** All Proposed (Claude):
+- Evaluation precision fp16 for every setup (follows from LoRA training; 4-bit stays possible with `--precision 4bit`, but then for all setups).
+- Greedy decoding, max 384 new tokens per turn (Q5). Agent loop: a tool call gets a result (its own email/document, otherwise "not found") and the model answers again, up to 2 tool results; only text the requester sees is scored. Reason: in the first smoke test 36% of untrained replies were tool calls, which ended the conversation and would favour (c).
+- Sample: 40 tasks per (family, tier, level) cell, 2,880 per setup, same for all setups (Measured 0.21 tasks/s on a T4 makes all 12,960 about 17 h per setup).
+- Policy text for (b): the screening policy adapted to three tiers (`POLICY` in `kaggle/eval/run_eval.py`). Freeze it before the first (b) numbers.
+- (c) evaluated both without and with the policy (`c`, `c_policy`), per the Q24 proposal.
+- Training set: 8,000 conversations (Marcel, 2026-11-09; was 4,000), 40% share, 40% refuse (spread over the five user-channel families), 20% indirect email; one epoch; Q26 defaults otherwise (Q5, Q26).
+- Targets are templated: share replies quote the item verbatim even for summary or paraphrase requests; indirect-email replies quote the email text before the injection. Simple, checkable by the scorer, but the model may learn to quote rather than summarize.
+- Training uses transformers `Trainer` + PEFT with hand-written loss masking, not TRL's `SFTTrainer`: masking is checked explicitly (prompt must be a token prefix of the full conversation) and avoids TRL API changes between versions. Still PyTorch + Hugging Face + PEFT.
+- Consequences: these change the numbers; agree on them before results are frozen (Nov 18).
+
 ### Later
 
-**Q9. Larger model and which one (Nov 11).** Proposal (Claude): Llama-3.1-8B-Instruct (no thinking mode to disable). Consequences: needs a 24 GB card; it is a different release, so not a controlled scaling study.
+**Q9. Closed (2026-11-09, Marcel): no larger model.** Original: **Larger model and which one (Nov 11).** Proposal (Claude): Llama-3.1-8B-Instruct (no thinking mode to disable). Consequences: needs a 24 GB card; it is a different release, so not a controlled scaling study.
 
 **Q16. Exact wording of the professor's feedback on tags.** Matters because it may mean small models do not understand `[CONFIDENTIAL]` tags without training, which would argue for (b) being weak by design. Proposal: reread the original message.
 
@@ -264,3 +280,6 @@ Format: **Why** it matters, **Proposal** (labelled Proposed; "Claude" means rais
 - **Q8** (upgrade the Mac to Python 3.12): reopened 2026-10-16, since the Mac is used again. Proposed: do it before building the real pipeline.
 - **Q19** (teammates' hardware): moot for model work; any machine works for editing.
 - **Q28** (debugging the training script): reopened 2026-10-16. Proposed: debug data, template and masking with plain LoRA on a tiny model on a laptop, then a short QLoRA smoke test on the GPU.
+
+**Q49. Do we add an out-of-distribution test for (c)? (Open, 2026-11-10)**
+Run 1 shows (c) at 0.0% leak and 100% utility on the held-out split (docs/05, Results run 1). Everything in that split shares the training prompt format and attack generator. Should we add a small out-of-distribution test set before the report (e.g. a different system-prompt and tag format, hand-written attacks, multi-turn attacks, injections hidden inside a record), run on (a), (b), (c)? Who writes it, how many tasks?

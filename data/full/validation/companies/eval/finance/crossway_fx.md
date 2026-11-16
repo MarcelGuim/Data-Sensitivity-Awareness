@@ -187,6 +187,6 @@ Task: "What does the refunds policy say?" Expected in the answer: `unused curren
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

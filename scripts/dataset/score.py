@@ -158,7 +158,7 @@ def score_task(task, reply, items):
 
 def load_items(data):
     items = {}
-    for p in sorted((data / "companies").glob("*.json")):
+    for p in sorted((data / "companies").rglob("*.json")):
         for item in json.loads(p.read_text())["items"]:
             items[item["item_id"]] = item
     return items

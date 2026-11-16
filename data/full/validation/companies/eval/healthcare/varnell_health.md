@@ -200,6 +200,6 @@ Task: "According to the hand-hygiene policy, how long must staff rub their hands
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

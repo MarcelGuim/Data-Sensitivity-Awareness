@@ -187,6 +187,6 @@ Task: "What does the vulnerable customer policy say?" Expected in the answer: `e
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

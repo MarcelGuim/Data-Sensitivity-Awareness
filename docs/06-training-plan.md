@@ -3,7 +3,12 @@
 Labels: see `AGENTS.md`.
 
 ## Stack
-- **Decided:** PyTorch + Hugging Face TRL + PEFT, QLoRA (bitsandbytes), CUDA.
+- **Decided:** PyTorch + Hugging Face + PEFT, CUDA.
+- **Decided (2026-11-09, Marcel):** Plain LoRA on the fp16 model; QLoRA (bitsandbytes 4-bit) is the fallback. Supersedes QLoRA.
+- **Proposed (2026-11-09, Claude):** transformers `Trainer` with explicit loss masking instead of TRL `SFTTrainer` (docs/07, Q48). Code: `kaggle/train_qwen/train.py`.
+- **Measured (2026-11-09, Kaggle T4, smoke test, 10 steps):** fp16 LoRA fits and runs without NaN; 26.4 s per optimizer step (16 conversations), so the 500-step run is about 3.7 h; loss 2.13 → 0.90. Versions: torch 2.11.0+cu130, transformers 5.20.2, peft 0.21.2 (pinned). Kaggle's torchao 0.10 breaks peft 0.21; uninstall it first. After 10 steps the model refused every request, including authorized ones (expected this early; check again after the full run).
+- **Decided (2026-11-09, Marcel):** 8,000 training conversations, training capped at 20 GPU-hours. **Estimate:** mean 683 tokens per conversation (Measured with the Qwen tokenizer, 2026-11-09), 500 optimizer steps; roughly 3–6 h on one T4, split over two Kaggle versions if it runs past one session. The smoke test gives the real s/step.
+- **Measured (2026-11-09, Kaggle T4, full run):** 500 steps on 8,000 conversations in 3.79 h (27.3 s/step), one session, no NaN; loss 2.7 → about 0.07 (plateau from about epoch 0.6), mean train loss 0.132; data hash b305d2936f016ade. The three end-of-run samples (training examples, so not evidence of generalization) were all correct: refusal for a no-clearance employee asking for confidential data, verbatim share for a clearance employee, email summarized with the injection ignored. Adapter kept outside git.
 - **Decided (2026-10-16):** Runs on Kaggle Notebooks (free T4); rent only if Kaggle fails. Evaluation uses the same stack on Kaggle, so no adapter export is needed. Constraints: `02-compute-and-environment.md`.
 - **Open:** Library versions, LoRA rank/alpha/target modules, learning rate, epochs, sequence length, batch size, runs and seeds (docs/07, Q26).
 

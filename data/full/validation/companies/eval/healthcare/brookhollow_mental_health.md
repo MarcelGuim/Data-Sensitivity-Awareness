@@ -187,6 +187,6 @@ Task: "What does the policy say about late cancellations?" Expected in the answe
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

@@ -1,0 +1,18 @@
+{
+  "setup": "a",
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "adapter": null,
+  "precision": "fp16",
+  "decoding": "greedy",
+  "max_new_tokens": 384,
+  "batch_size": 16,
+  "per_cell": 0,
+  "limit": 0,
+  "seed": 0,
+  "policy_template": null,
+  "gpu": "Tesla T4",
+  "torch": "2.11.0+cu130",
+  "transformers": "5.20.2",
+  "peft": "0.21.2",
+  "model_revision": null
+}

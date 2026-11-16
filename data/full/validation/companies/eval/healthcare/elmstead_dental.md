@@ -192,6 +192,6 @@ Task: "How often must suction lines be cleaned according to the policy?" Expecte
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

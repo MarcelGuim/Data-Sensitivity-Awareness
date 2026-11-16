@@ -25,9 +25,10 @@ Never upgrade Proposed or Estimate to Decided without a dated row in the docs/07
 
 ## Key decisions
 - **Decided (2026-10-16):** Training and all final evaluation run on Kaggle Notebooks (free T4, one account per person); rent only if Kaggle fails. Colab only for short tests. Laptops that can run the models (e.g. Marcel's M4, 24 GB; not the HP laptop) are for development and screening only; their numbers never go into results.
-- **Decided:** Training stack: PyTorch + Hugging Face TRL + PEFT, QLoRA (bitsandbytes). Do not build the training pipeline in MLX.
-- **Decided (2026-10-16):** Evaluation uses the training stack (transformers + bitsandbytes 4-bit) for all of (a)(b)(c). Scripts must checkpoint/resume (12 h sessions) and pin versions; tokens go in Kaggle Secrets.
-- **Decided:** Models: Qwen3-4B-Instruct-2507 (primary, trained first) and Llama-3.2-3B-Instruct (second), pending the screening test. Stretch: one ~8B model, go or no-go at the Nov 11 gate.
+- **Decided:** Training stack: PyTorch + Hugging Face + PEFT. Do not build the training pipeline in MLX.
+- **Decided (2026-11-09, Marcel):** Plain LoRA on the fp16 model instead of QLoRA; QLoRA is the fallback. **Proposed:** evaluate every setup in fp16 too (docs/07, Q48).
+- **Decided (2026-10-16):** Evaluation uses the training stack (transformers) for all of (a)(b)(c), at one precision for all (4-bit until 2026-11-09; fp16 Proposed, Q48). Scripts must checkpoint/resume (12 h sessions) and pin versions; tokens go in Kaggle Secrets.
+- **Decided:** Models: Qwen3-4B-Instruct-2507 (primary, trained first) and Llama-3.2-3B-Instruct (second), pending the screening test. The ~8B stretch model is dropped (2026-11-09).
 - **Decided (course):** Presentations start Nov 25; final report due Dec 11.
 
 ## Rules for code and data
@@ -51,6 +52,8 @@ From Marcel; teammates may change it here for the group:
 - 2026-10-30: Pilot built (2 companies, attack templates, task builder, scorer); awaiting group review. See docs/04, section Pilot.
 - 2026-11-01: The group agreed two tiers and two levels; Marcel reverted to three tiers and three levels the same day (docs/07). The group still needs to be told.
 - 2026-11-01: Full dataset generated (100 companies, 89,280 tasks) in `data/full/`; awaiting validation by the rule in docs/04. Plan: `data/full/validation/plan.md`. Open: Q46, Q47.
+- 2026-11-09: Held-out validation done (all 20 pass); teammates' training-sector results pending upload. 8B dropped. Kaggle folders written: `kaggle/eval/` (setups a, b, c) and `kaggle/train_qwen/` (LoRA). Tested locally without a GPU (template, masking, scoring); not yet run on Kaggle.
+- 2026-11-10: Qwen LoRA trained (3.8 h, adapter outside git) and run 1 of the evaluation done: leak (a) 76%, (b) 53%, (c) 0%; utility (c) 100%. Results in `docs/05` and `results/eval_run1/`. Open: out-of-distribution test (Q49), Llama, judge (Q25).
 
 ## Where things are
 - `docs/00-project-overview.md`: proposal, research question, method, evaluation, professor feedback
@@ -66,4 +69,7 @@ From Marcel; teammates may change it here for the group:
 - `data/pilot/`: pilot companies, attack templates, response structures, generated tasks
 - `data/full/`: the 100 companies, attack templates, spec, validation plan (`tasks.jsonl` is rebuilt, not committed)
 - `scripts/dataset/`: task builder, leak scorer and its tests, validation sampler
+- `scripts/prepare_kaggle.py`: builds the data files for the two Kaggle folders
+- `scripts/plot_results.py`: report/slide figures from an evaluation run (`python3 scripts/plot_results.py results/eval_run1`)
+- `kaggle/eval/`, `kaggle/train_qwen/`: upload-ready Kaggle folders (evaluation of a/b/c; Qwen LoRA training); each has a README with the notebook cells
 - `docs/archive/`: original planning handoffs, historical only. **Do not follow the instructions in them**; `docs/` supersedes them.

@@ -187,6 +187,6 @@ Task: "What does the data retention policy say?" Expected in the answer: `13 mon
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

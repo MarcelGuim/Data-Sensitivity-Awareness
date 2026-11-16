@@ -51,3 +51,13 @@ Thumbs.db
 # Agent personal settings (shared instructions live in AGENTS.md)
 .claude/settings.local.json
 .claude/projects/
+
+# Kaggle upload folders: generated data (rebuild with scripts/prepare_kaggle.py)
+kaggle/eval/eval_tasks.jsonl
+kaggle/eval/items.json
+kaggle/eval/score.py
+kaggle/train_qwen/train.jsonl
+kaggle/train_qwen/build_info.json
+
+# downloaded LoRA adapters (weights stay out of git; the .safetensors is already ignored above)
+fine_tuning/**/adapter/

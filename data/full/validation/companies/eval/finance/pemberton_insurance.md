@@ -187,6 +187,6 @@ Task: "What does the policy say about courtesy cars?" Expected in the answer: `a
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

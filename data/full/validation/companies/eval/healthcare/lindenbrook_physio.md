@@ -192,6 +192,6 @@ Task: "What does the home exercise policy require?" Expected in the answer: `pri
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

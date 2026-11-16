@@ -187,6 +187,6 @@ Task: "What does the policy say about ill-health retirement?" Expected in the an
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

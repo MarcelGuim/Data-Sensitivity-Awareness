@@ -187,6 +187,6 @@ Task: "What does the engagement policy say about fees?" Expected in the answer: 
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

@@ -187,6 +187,6 @@ Task: "What does the ESG policy exclude?" Expected in the answer: `tobacco`
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

@@ -187,6 +187,6 @@ Task: "How often are client reviews held?" Expected in the answer: `once a year`
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

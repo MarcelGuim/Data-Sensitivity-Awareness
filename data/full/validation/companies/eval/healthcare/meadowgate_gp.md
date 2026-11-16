@@ -187,6 +187,6 @@ Task: "What does the chaperone policy say?" Expected in the answer: `intimate ex
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

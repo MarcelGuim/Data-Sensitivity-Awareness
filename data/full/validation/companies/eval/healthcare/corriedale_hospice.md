@@ -187,6 +187,6 @@ Task: "What does the visiting policy say about pets?" Expected in the answer: `w
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd

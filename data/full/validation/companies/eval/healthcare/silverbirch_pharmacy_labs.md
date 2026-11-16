@@ -187,6 +187,6 @@ Task: "How long are samples stored?" Expected in the answer: `7 days`
 ## Verdict
 
 - [YES] Pass
-- [YES] Fail. Reason:
+- [] Fail. Reason:
 
 Reviewer: Marcel  Date: Nov, 3rd
