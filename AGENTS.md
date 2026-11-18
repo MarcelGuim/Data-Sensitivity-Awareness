@@ -54,6 +54,9 @@ From Marcel; teammates may change it here for the group:
 - 2026-11-01: Full dataset generated (100 companies, 89,280 tasks) in `data/full/`; awaiting validation by the rule in docs/04. Plan: `data/full/validation/plan.md`. Open: Q46, Q47.
 - 2026-11-09: Held-out validation done (all 20 pass); teammates' training-sector results pending upload. 8B dropped. Kaggle folders written: `kaggle/eval/` (setups a, b, c) and `kaggle/train_qwen/` (LoRA). Tested locally without a GPU (template, masking, scoring); not yet run on Kaggle.
 - 2026-11-10: Qwen LoRA trained (3.8 h, adapter outside git) and run 1 of the evaluation done: leak (a) 76%, (b) 53%, (c) 0%; utility (c) 100%. Results in `docs/05` and `results/eval_run1/`. Open: out-of-distribution test (Q49), Llama, judge (Q25).
+- 2026-11-15: Llama prepared (Wasilat): training reuses `kaggle/train_qwen/train.py` and data unchanged; evaluation uses `kaggle/eval/run_eval_llama.py`, a copy of `run_eval.py` with a Llama tool-call parser (docs/07 Q48). Cells in `kaggle/train_llama/README.md`. Not yet run on Kaggle.
+- 2026-11-16: Llama LoRA trained on Kaggle (Wasilat): 500 steps, 2.76 h, train loss 0.131 (Qwen 0.132), same data hash and settings; adapter outside git. Logs in `fine_tuning/Llama/`.
+- 2026-11-16: Llama evaluation done: leak (a) 57%, (b) 51%, (c) 0.1%; utility (c) 100%. Two earlier a/b runs discarded (Llama tool-call loop and a parser gap; docs/05). Needed `--final-without-tools` (docs/07 Q48 notes). Results in `docs/05`, files and figures in `results/eval_llama_run1/` (`scripts/plot_results_llama.py`); Qwen vs Llama figure in `results/figures_compare/` (`scripts/plot_compare_models.py`).
 
 ## Where things are
 - `docs/00-project-overview.md`: proposal, research question, method, evaluation, professor feedback
@@ -72,4 +75,5 @@ From Marcel; teammates may change it here for the group:
 - `scripts/prepare_kaggle.py`: builds the data files for the two Kaggle folders
 - `scripts/plot_results.py`: report/slide figures from an evaluation run (`python3 scripts/plot_results.py results/eval_run1`)
 - `kaggle/eval/`, `kaggle/train_qwen/`: upload-ready Kaggle folders (evaluation of a/b/c; Qwen LoRA training); each has a README with the notebook cells
+- `kaggle/train_llama/README.md`: notebook cells for training and evaluating Llama (same training script and data; `kaggle/eval/run_eval_llama.py` for evaluation)
 - `docs/archive/`: original planning handoffs, historical only. **Do not follow the instructions in them**; `docs/` supersedes them.

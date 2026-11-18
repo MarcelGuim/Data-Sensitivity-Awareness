@@ -1,0 +1,66 @@
+{
+  "model": "meta-llama/Llama-3.2-3B-Instruct",
+  "precision": "fp16",
+  "args": {
+    "model": "meta-llama/Llama-3.2-3B-Instruct",
+    "data": "/kaggle/input/datasets/wasilatayinla/ece-1776-train-llama/train.jsonl",
+    "out": "/kaggle/working/llama_lora",
+    "resume_dir": null,
+    "precision": "fp16",
+    "rank": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "lr": 0.0002,
+    "epochs": 1.0,
+    "max_steps": -1,
+    "batch_size": 2,
+    "grad_accum": 8,
+    "max_len": 2048,
+    "save_steps": 25,
+    "limit": 0,
+    "seed": 0,
+    "gpu": "0",
+    "max_hours": 11.0
+  },
+  "data_sha256_16": "b305d2936f016ade",
+  "examples": 8000,
+  "optimizer_steps": 500,
+  "train_loss": 0.13139022183418275,
+  "hours_this_session": 2.76,
+  "gpu": "Tesla T4",
+  "torch": "2.11.0+cu130",
+  "transformers": "5.20.2",
+  "peft": "0.21.2",
+  "model_revision": null,
+  "build_info": {
+    "source": "data/full/tasks.jsonl",
+    "source_sha256_16": "3c229828d327be84",
+    "n_train": 8000,
+    "seed": 0,
+    "excluded_companies": [],
+    "train_companies": 80,
+    "counts": {
+      "do_task/indirect_email": 1600,
+      "refuse/benign": 640,
+      "refuse/direct": 640,
+      "refuse/paraphrase": 640,
+      "refuse/summary": 640,
+      "refuse/tampering": 640,
+      "share/benign": 640,
+      "share/direct": 640,
+      "share/paraphrase": 640,
+      "share/summary": 640,
+      "share/tampering": 640
+    },
+    "by_level": {
+      "internal_no_clearance": 2636,
+      "internal_clearance": 2106,
+      "external": 3258
+    },
+    "by_tier": {
+      "confidential": 3178,
+      "private": 2658,
+      "public": 2164
+    }
+  }
+}
