@@ -1,10 +1,11 @@
 """Figures for the report and slides from the scored.jsonl files of one evaluation run.
 
-  python3 scripts/plot_results.py results/eval_run1
+  python3 scripts/plot_results.py results/eval_run1          # Qwen
+  python3 scripts/plot_results.py results/eval_llama_run1    # Llama (model found from the folder names)
 
 Writes PNG (slides) and PDF (report) into <run>/figures/. Needs matplotlib.
 (c)+policy is left out of the figures: its metrics equal (c) (docs/05, Results run 1).
-Bars are rates with Wilson 95% intervals (same as kaggle/eval/summarize.py).
+Bars are plain rates; intervals are left out of the figures (they are in kaggle/eval/summarize.py output).
 """
 import json
 import math
@@ -22,6 +23,11 @@ FAMILIES = ["benign", "direct", "tampering", "paraphrase", "summary", "indirect_
             "indirect_document", "encoding"]
 HELD_OUT = {"indirect_document", "encoding"}
 TIERS = ["public", "private", "confidential"]
+LEVELS = ["external", "internal_no_clearance", "internal_clearance"]
+LEVEL_NAMES = {"external": "external", "internal_no_clearance": "employee,\nno clearance",
+               "internal_clearance": "employee,\nclearance"}
+FAMILY_NAMES = {"benign": "plain request\n(no attack)"}
+MODEL_NAMES = {"Qwen3-4B-Instruct-2507": "Qwen3-4B", "Llama-3.2-3B-Instruct": "Llama-3.2-3B"}
 
 
 def wilson(k, n, z=1.96):
@@ -55,22 +61,44 @@ def style(ax):
 
 
 def bars(ax, groups, data, width=0.26, label_size=8):
-    """data[setup][group] = (rate, lo, hi, n). Grouped bars with CI whiskers and value labels."""
+    """data[setup][group] = (rate, lo, hi, n). Grouped bars with value labels (no intervals)."""
     for i, (s, name) in enumerate(SETUPS):
         xs = [g + (i - 1) * width for g in range(len(groups))]
         vals = [data[s][g] for g in groups]
         ax.bar(xs, [v[0] for v in vals], width - 0.03, color=COLORS[s], label=name,
                edgecolor=SURFACE, linewidth=1)
-        ax.errorbar(xs, [v[0] for v in vals],
-                    yerr=[[max(0, v[0] - v[1]) for v in vals], [max(0, v[2] - v[0]) for v in vals]],
-                    fmt="none", ecolor=INK2, elinewidth=0.9, capsize=2)
         for x, v in zip(xs, vals):
-            ax.text(x, v[2] + 1.5, f"{v[0]:.0f}", ha="center", va="bottom", fontsize=label_size, color=INK)
+            ax.text(x, v[0] + 1.5, f"{v[0]:.0f}", ha="center", va="bottom", fontsize=label_size, color=INK)
+
+
+def find_model(run):
+    """Model id from the folder names eval_<model>_a, eval_<model>_b, ..."""
+    found = sorted(d.name[len("eval_"):-len("_a")] for d in run.glob("eval_*_a") if d.is_dir())
+    if len(found) != 1:
+        sys.exit(f"expected one eval_<model>_a folder in {run}, found {found}")
+    return found[0]
+
+
+def simple_bar_chart(rows, metric, groups, labels, title, ylabel, path, figsize=(7, 4)):
+    """groups: list of row filters; one bar group per filter, one bar per setup."""
+    fig, ax = plt.subplots(figsize=figsize)
+    style(ax)
+    data = {s: {i: rate([r for r in rows[s] if g(r)], metric) for i, g in enumerate(groups)} for s, _ in SETUPS}
+    bars(ax, list(range(len(groups))), data)
+    ax.set_xticks(range(len(groups)))
+    ax.set_xticklabels(labels)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title, loc="left", color=INK)
+    ax.legend(frameon=False, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.16))
+    fig.tight_layout()
+    save(fig, path)
 
 
 def main(run):
     run = Path(run)
-    rows = {s: [json.loads(line) for line in (run / f"eval_Qwen3-4B-Instruct-2507_{s}" / "scored.jsonl").open()]
+    model = find_model(run)
+    model_name = MODEL_NAMES.get(model, model)
+    rows = {s: [json.loads(line) for line in (run / f"eval_{model}_{s}" / "scored.jsonl").open()]
             for s, _ in SETUPS}
     out = run / "figures"
     out.mkdir(exist_ok=True)
@@ -93,7 +121,7 @@ def main(run):
         ax.set_title(title, fontsize=10, color=INK)
     h, lab = axes[0].get_legend_handles_labels()
     fig.legend(h, lab, loc="lower center", ncol=3, frameon=False)
-    fig.suptitle("Qwen3-4B on the held-out evaluation (2,880 tasks per setup, 95% intervals)",
+    fig.suptitle(f"{model_name} on the held-out evaluation",
                  fontsize=12, color=INK, x=0.01, ha="left")
     fig.tight_layout(rect=(0, 0.07, 1, 1))
     save(fig, out / "1_headline")
@@ -105,9 +133,10 @@ def main(run):
             for s, _ in SETUPS}
     bars(ax, list(range(len(FAMILIES))), data)
     ax.set_xticks(range(len(FAMILIES)))
-    ax.set_xticklabels([f.replace("_", "\n") + ("\n(held out)" if f in HELD_OUT else "") for f in FAMILIES])
+    ax.set_xticklabels([FAMILY_NAMES.get(f, f.replace("_", "\n")) + ("\n(held out)" if f in HELD_OUT else "")
+                        for f in FAMILIES])
     ax.set_ylabel("Leak rate, restricted requests")
-    ax.set_title("Leak rate by attack family (n = 120 per bar)", loc="left", color=INK)
+    ax.set_title("Leak rate by attack family", loc="left", color=INK)
     ax.legend(frameon=False, ncol=3, loc="upper right")
     fig.tight_layout()
     save(fig, out / "2_leak_by_family")
@@ -126,7 +155,7 @@ def main(run):
     fig.tight_layout()
     save(fig, out / "3_utility_by_tier")
 
-    # 4. trade-off: leak vs utility, one point per setup
+    # 4. utility vs leak rate, one point per setup
     fig, ax = plt.subplots(figsize=(5.5, 4.5))
     ax.set_facecolor(SURFACE)
     for s in ("top", "right"):
@@ -138,8 +167,7 @@ def main(run):
     ax.set_axisbelow(True)
     for s, name in SETUPS:
         lk, ut = rate(rows[s], leak), rate(rows[s], disclosed)
-        ax.errorbar(lk[0], ut[0], xerr=[[max(0, lk[0] - lk[1])], [max(0, lk[2] - lk[0])]], yerr=[[max(0, ut[0] - ut[1])], [max(0, ut[2] - ut[0])]],
-                    fmt="o", ms=10, color=COLORS[s], ecolor=INK2, elinewidth=0.9, mec=SURFACE, mew=2)
+        ax.plot(lk[0], ut[0], "o", ms=10, color=COLORS[s], mec=SURFACE, mew=2)
         ax.annotate(name, (lk[0], ut[0]), xytext={"a": (-30, -22), "b": (-40, 10), "c": (10, -14)}[s], textcoords="offset points",
                     fontsize=9, color=INK)
     ax.set_xlim(-5, 100)
@@ -148,9 +176,49 @@ def main(run):
     ax.set_ylabel("Disclosure to authorized  →  better")
     ax.xaxis.set_major_formatter(lambda v, _: f"{v:.0f}%")
     ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0f}%")
-    ax.set_title("Security vs utility (top left is best)", loc="left", color=INK)
+    ax.set_title(f"Utility vs leak rate, {model_name} (top left is best)", loc="left", color=INK)
     fig.tight_layout()
-    save(fig, out / "4_tradeoff")
+    save(fig, out / "4_utility_vs_leak")
+
+    # 5-7. leak rate slices. Only restricted requests count, so public records and employees
+    # with clearance never appear (they may see everything they ask for).
+    simple_bar_chart(rows, leak, [lambda r, t=t: r["item_tier"] == t for t in ["private", "confidential"]],
+                     ["private", "confidential"],
+                     "Leak rate by record tier", "Leak rate, restricted requests", out / "5_leak_by_tier",
+                     figsize=(6, 4))
+    simple_bar_chart(rows, leak, [lambda r, lv=lv: r["requester_level"] == lv for lv in ["external", "internal_no_clearance"]],
+                     ["external", "employee, no clearance"],
+                     "Leak rate by requester", "Leak rate, restricted requests", out / "6_leak_by_requester",
+                     figsize=(6, 4))
+    # mismatch: confidential records that look harmless (leak), public records that look sensitive (disclosure)
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
+    conf = lambda r: r["item_tier"] == "confidential"  # noqa: E731
+    pub = lambda r: r["item_tier"] == "public"  # noqa: E731
+    panels = [("Confidential records: leak rate\n(lower is better)", leak, conf, "looks_less_sensitive",
+               ["tag matches content", "looks harmless"]),
+              ("Public records: disclosure\n(higher is better)", disclosed, pub, "looks_more_sensitive",
+               ["tag matches content", "looks sensitive"])]
+    for ax, (title, m, tier, label, names) in zip(axes, panels):
+        style(ax)
+        groups = [lambda r, t=tier: t(r) and not r.get("item_mismatch"),
+                  lambda r, t=tier, lb=label: t(r) and r.get("item_mismatch") == lb]
+        data = {s: {i: rate([r for r in rows[s] if g(r)], m) for i, g in enumerate(groups)} for s, _ in SETUPS}
+        bars(ax, [0, 1], data)
+        ax.set_xticks([0, 1])
+        ax.set_xticklabels(names)
+        ax.set_title(title, fontsize=10, color=INK)
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="lower center", ncol=3, frameon=False)
+    fig.suptitle("Records whose tag disagrees with how sensitive they look", fontsize=12, color=INK,
+                 x=0.01, ha="left")
+    fig.tight_layout(rect=(0, 0.07, 1, 1))
+    save(fig, out / "7_mismatch")
+
+    # 8. utility by requester level
+    simple_bar_chart(rows, disclosed, [lambda r, lv=lv: r["requester_level"] == lv for lv in LEVELS],
+                     [LEVEL_NAMES[lv] for lv in LEVELS],
+                     "Utility by requester", "Full disclosure to authorized requesters",
+                     out / "8_utility_by_requester")
     print(f"wrote {out}")
 
 

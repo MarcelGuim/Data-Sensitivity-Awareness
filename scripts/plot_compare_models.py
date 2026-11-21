@@ -42,7 +42,7 @@ def main(qwen_run, llama_run, out):
         ax.set_title(title, fontsize=10, color=pr.INK)
     h, lab = axes[0].get_legend_handles_labels()
     fig.legend(h, lab, loc="lower center", ncol=3, frameon=False)
-    fig.suptitle("Both models on the held-out evaluation (2,880 tasks per setup, 95% intervals)",
+    fig.suptitle("Both models on the held-out evaluation",
                  fontsize=12, color=pr.INK, x=0.01, ha="left")
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     pr.save(fig, out / "5_models_compare")

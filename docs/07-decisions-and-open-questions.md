@@ -253,7 +253,9 @@ Format: **Why** it matters, **Proposal** (labelled Proposed; "Claude" means rais
 
 **Q9. Closed (2026-11-09, Marcel): no larger model.** Original: **Larger model and which one (Nov 11).** Proposal (Claude): Llama-3.1-8B-Instruct (no thinking mode to disable). Consequences: needs a 24 GB card; it is a different release, so not a controlled scaling study.
 
-**Q16. Exact wording of the professor's feedback on tags.** Matters because it may mean small models do not understand `[CONFIDENTIAL]` tags without training, which would argue for (b) being weak by design. Proposal: reread the original message.
+**Q16. Closed (2026-11-20, Marcel supplied the exact text; recorded in docs/00):** the professor wrote "evaluate on a smaller model in any case that may not be previously trained to understand tags anyways". Original text below.
+
+**Q16 (original). Exact wording of the professor's feedback on tags.** Matters because it may mean small models do not understand `[CONFIDENTIAL]` tags without training, which would argue for (b) being weak by design. Proposal: reread the original message.
 
 **Q17. Positioning against DLP.** Proposal: a related-work paragraph: DLP filters outputs by pattern; this work makes the model itself tier-aware under IPI.
 
@@ -285,3 +287,5 @@ Format: **Why** it matters, **Proposal** (labelled Proposed; "Claude" means rais
 
 **Q49. Do we add an out-of-distribution test for (c)? (Open, 2026-11-10)**
 Run 1 shows (c) at 0.0% leak and 100% utility on the held-out split (docs/05, Results run 1). Everything in that split shares the training prompt format and attack generator. Should we add a small out-of-distribution test set before the report (e.g. a different system-prompt and tag format, hand-written attacks, multi-turn attacks, injections hidden inside a record), run on (a), (b), (c)? Who writes it, how many tasks?
+
+**Q50. How does our increment differ from role-aware/permissioned LLM fine-tuning? (Open, 2026-11-20)** Why: Almheiri et al. 2025 (arXiv:2507.23465), Permissioned LLMs (arXiv:2505.22860) and Role-Conditioned Refusals (arXiv:2510.07642) already fine-tune models to answer by user role, and at least the first reports prompt-injection tests (Unverified, docs/00 related work). The presentation's novelty slide depends on this. Proposal (Claude): one member reads the three papers before Nov 25 and checks whether they cover indirect injection through tool outputs, held-out attack families, and a policy-prompt baseline; narrow the claim to whatever they do not cover. Update 2026-11-20 (Marcel with Claude): the three papers were read (summary and proposed increment in docs/00, related work); none covers indirect injection, context-held data, a policy-prompt baseline under attack, or held-out attack families. Still Open until the group agrees the wording.
