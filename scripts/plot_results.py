@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-SETUPS = [("a", "(a) untrained"), ("b", "(b) policy prompt"), ("c", "(c) trained")]
+SETUPS = [("a", "(a) no defense"), ("b", "(b) policy prompt"), ("c", "(c) fine-tuned")]
 COLORS = {"a": "#2a78d6", "b": "#eb6834", "c": "#1baf7a"}  # validated categorical slots 1-3
 INK, INK2, GRID, SURFACE = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb"
 FAMILIES = ["benign", "direct", "tampering", "paraphrase", "summary", "indirect_email",
@@ -219,6 +219,15 @@ def main(run):
                      [LEVEL_NAMES[lv] for lv in LEVELS],
                      "Utility by requester", "Full disclosure to authorized requesters",
                      out / "8_utility_by_requester")
+
+    # 9. leak rate by requester x tier: the three restricted combinations
+    combos = [("external", "private"), ("external", "confidential"), ("internal_no_clearance", "confidential")]
+    simple_bar_chart(rows, leak,
+                     [lambda r, lv=lv, t=t: r["requester_level"] == lv and r["item_tier"] == t for lv, t in combos],
+                     ["external asks for\nprivate", "external asks for\nconfidential",
+                      "employee, no clearance,\nasks for confidential"],
+                     "Leak rate by requester and record tier", "Leak rate, restricted requests",
+                     out / "9_leak_by_requester_and_tier", figsize=(8, 4))
     print(f"wrote {out}")
 
 

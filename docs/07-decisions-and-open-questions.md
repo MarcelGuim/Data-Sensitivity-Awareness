@@ -55,6 +55,7 @@ Rows dated 2026-10-15/16 were recorded in the planning chat; the exact day withi
 | 2026-11-09 | Start now, in parallel: evaluation of (a) and (b), and Qwen training for (c) | Marcel | Code in `kaggle/eval/`, `kaggle/train_qwen/` |
 | 2026-11-09 | Train with plain LoRA on the fp16 model instead of QLoRA; QLoRA (`--precision 4bit`) is the fallback if fp16 runs out of memory or gives NaN | Marcel | Supersedes QLoRA in the 2026-10-16 stack decision. Consequence, Proposed (Claude): evaluate (a), (b), (c) all in fp16 so the precision is the same (supersedes 4-bit evaluation); see Q48 |
 | 2026-11-09 | Training set 8,000 conversations (was 4,000); training capped at 20 GPU-hours | Marcel | Kaggle sessions last at most 12 h, so the cap is split over two versions |
+| 2026-11-21 | Setup names in figures, slides and report: (a) "no defense" (was "untrained": the base models are trained instruction models), (b) "policy prompt", (c) "fine-tuned" (was "trained"), (c)+policy "fine-tuned + policy prompt" | Marcel | Figures regenerated. Older docs text still says untrained/trained; the letters (a)/(b)/(c) mean the same setups. Group to be told |
 | Course | Presentations start Nov 25 (plan for that slot); final report due Dec 11 | Course | |
 
 ## Proposed, awaiting group agreement
